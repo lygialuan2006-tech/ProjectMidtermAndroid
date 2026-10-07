@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.project_gk"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.project_gk"
@@ -25,12 +25,10 @@ android {
             )
         }
     }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-
     buildFeatures {
         viewBinding = true
     }
@@ -54,9 +52,11 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
-    // 4. SQLCipher for Android (Mã hóa toàn bộ SQLite DB)
+    // 4. SQLCipher for Android
     implementation("net.zetetic:android-database-sqlcipher:4.5.4")
+    implementation("androidx.sqlite:sqlite:2.4.0")
 
+    implementation("androidx.lifecycle:lifecycle-process:2.7.0")
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

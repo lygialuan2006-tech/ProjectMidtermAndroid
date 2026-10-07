@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="vault_bg">#070A09</color>
+    <color name="vault_card">#0F1512</color>
+    <color name="vault_card_stroke">#1A241F</color>
+    <color name="vault_neon">#00E599</color>
+    <color name="vault_neon_dark">#0F2D24</color>
+    <color name="vault_teal_btn">#007A65</color>
+    <color name="vault_text_white">#F3F5F4</color>
+    <color name="vault_text_gray">#788A83</color>
+    <color name="vault_text_dim">#47544F</color>
 </resources>
