@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteAdapter noteAdapter;
     private AppLifecycleTracker lifecycleTracker;
     private boolean isPinVisible = false;
-    private long editingNoteId = -1L; // -1L nghĩa là đang ở chế độ Thêm mới
+    private long editingNoteId = -1L;
     private String selectedCategory = "";
     private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
 
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Chống quay video / chụp màn hình (FLAG_SECURE)
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Khóa app khi ra ngoài (Grace period 60s)
         lifecycleTracker = new AppLifecycleTracker(() -> runOnUiThread(this::lockVault));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleTracker);
 
@@ -75,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         setupSearchAndFilter();
         setupListeners();
 
-        // Mặc định luôn ở trạng thái khóa ban đầu
         lockVault();
     }
 
@@ -84,16 +81,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 if (binding.layoutAdd.getVisibility() == View.VISIBLE) {
-                    // Đang ở màn hình Thêm/Sửa -> Quay về Dashboard
                     resetAddForm();
                     hideKeyboard();
                     binding.layoutAdd.setVisibility(View.GONE);
                     binding.layoutDashboard.setVisibility(View.VISIBLE);
                 } else if (binding.layoutDashboard.getVisibility() == View.VISIBLE) {
-                    // Đang ở Dashboard -> Khóa vault về Auth
                     lockVault();
                 } else {
-                    // Đang ở Auth -> Cho phép thoát app
                     setEnabled(false);
                     getOnBackPressedDispatcher().onBackPressed();
                     setEnabled(true);
@@ -106,15 +100,12 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter = new NoteAdapter();
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(this));
         binding.rvNotes.setAdapter(noteAdapter);
-
-        // Nhấn vào từng thẻ để mở màn hình Chỉnh sửa (Edit Note)
         noteAdapter.setOnItemClickListener(this::openEditNoteScreen);
     }
 
     private void setupSearchAndFilter() {
         selectedCategory = getString(R.string.filter_all);
 
-        // Lắng nghe lọc tìm kiếm live
         binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -128,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Nút filter icon mở PopupMenu
         binding.btnFilter.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(this, v);
             popup.getMenu().add(0, 0, 0, getString(R.string.filter_all));
@@ -154,10 +144,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // --- 1. MÀN HÌNH KHÓA (AUTH) ---
         binding.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
 
-        // Bật / tắt ẩn hiện Master PIN (Dùng selector)
         binding.ivTogglePin.setOnClickListener(v -> {
             isPinVisible = !isPinVisible;
             binding.ivTogglePin.setSelected(isPinVisible);
@@ -171,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Xác thực bằng Master PIN
         binding.btnAuthPin.setOnClickListener(v -> {
             String enteredPin = binding.etMasterPin.getText().toString().trim();
 
@@ -189,16 +176,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // --- 2. MÀN HÌNH DASHBOARD ---
         binding.btnLock.setOnClickListener(v -> {
             lockVault();
             Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
         });
 
-        // Nút thêm mới bản ghi (+) -> Open Form Add Mode
         binding.fabAdd.setOnClickListener(v -> openAddNoteScreen());
 
-        // Benchmark test
         binding.btnBenchmark.setOnClickListener(v -> {
             if (standardDb != null && encryptedDb != null) {
                 Toast.makeText(this, getString(R.string.toast_benchmark_running), Toast.LENGTH_SHORT).show();
@@ -216,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // --- 3. MÀN HÌNH THÊM / CHỈNH SỬA ---
         binding.btnBack.setOnClickListener(v -> {
             hideKeyboard();
             resetAddForm();
@@ -289,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
 
         backgroundExecutor.execute(() -> {
             if (editingNoteId != -1L) {
-                // CHỈNH SỬA: Chỉ ghi vào encryptedDb
                 SecureNote note = new SecureNote(title, finalCategory, content);
                 note.setId(editingNoteId);
                 note.setTimestamp(System.currentTimeMillis());
@@ -297,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
                     encryptedDb.noteDao().updateNote(note);
                 }
             } else {
-                // THÊM MỚI: Chỉ ghi vào encryptedDb (Bảo mật: Không ghi plaintext)
                 SecureNote note = new SecureNote(title, finalCategory, content);
                 if (encryptedDb != null) {
                     encryptedDb.noteDao().insertNote(note);
