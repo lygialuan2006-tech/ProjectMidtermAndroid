@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
+    android:background="@drawable/bg_icon_container"
+    android:contentDescription="@string/cd_filter_icon"
+    android:padding="8dp"
+    android:src="@drawable/ic_filter"
+    app:tint="@color/vault_text_dim" />

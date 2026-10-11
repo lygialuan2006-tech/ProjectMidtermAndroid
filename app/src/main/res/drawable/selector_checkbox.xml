@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/vault_teal_btn" />
+            <corners android:radius="4dp" />
+            <size android:width="20dp" android:height="20dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="1.5dp" android:color="@color/add_hint_text" />
+            <corners android:radius="4dp" />
+            <size android:width="20dp" android:height="20dp" />
+        </shape>
+    </item>
+    
+</selector>

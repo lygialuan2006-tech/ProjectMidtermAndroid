@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!-- ADD / EDIT -->
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layoutAdd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/add_screen_bg"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp">
+
+            <!-- Top Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    app:drawableStartCompat="@drawable/ic_back"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/add_btn_back"
+                    android:textColor="@color/vault_teal_btn"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:drawableTint="@color/vault_teal_btn" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSaveData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/vault_teal_btn"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/add_btn_save"
+                    android:textColor="@color/add_on_accent"
+                    android:textSize="13sp"
+                    app:cornerRadius="20dp" />
+
+                <TextView
+                    android:id="@+id/tvAddTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/btnBack"
+                    android:layout_toStartOf="@id/btnSaveData"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:paddingHorizontal="4dp"
+                    android:singleLine="true"
+                    android:text="@string/add_title"
+                    android:textColor="@color/add_title_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <!-- Thẻ thông báo trên đầu -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/add_notice_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:text="@string/add_encrypted_notice"
+                    android:textColor="@color/vault_teal_btn"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/add_label_title"
+                android:textColor="@color/add_label_text"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etTitleInput"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_light"
+                android:hint="@string/add_hint_title"
+                android:inputType="text"
+                android:paddingHorizontal="14dp"
+                android:textColor="@color/add_input_text"
+                android:textColorHint="@color/add_hint_text"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/add_label_category"
+                android:textColor="@color/add_label_text"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rgCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp">
+
+                <RadioButton
+                    android:id="@+id/rbPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/add_cat_password"
+                    android:textColor="@color/add_label_text" />
+
+                <RadioButton
+                    android:id="@+id/rbBank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_cat_bank"
+                    android:textColor="@color/add_label_text" />
+
+                <RadioButton
+                    android:id="@+id/rbNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_cat_note"
+                    android:textColor="@color/add_label_text" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_label_content"
+                android:textColor="@color/add_label_text"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etContentInput"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_light"
+                android:gravity="top|start"
+                android:hint="@string/add_hint_content"
+                android:inputType="textMultiLine"
+                android:padding="14dp"
+                android:textColor="@color/add_input_text"
+                android:textColorHint="@color/add_hint_text"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:button="@drawable/selector_checkbox"
+                android:buttonTint="@color/vault_teal_btn"
+                android:checked="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/add_checkbox_clipboard"
+                android:textColor="@color/add_label_text"
+                android:textSize="13sp" />
+
+            <!-- Nút Xóa bản ghi (chỉ hiển thị khi Edit Note) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteNote"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/danger"
+                android:text="@string/add_btn_delete"
+                android:textColor="@color/add_on_accent"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="20dp" />
+
+            <!-- Card Trạng thái ở đáy -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/add_notice_bg"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/cd_shield_icon"
+                        android:src="@drawable/ic_shield"
+                        app:tint="@color/add_status_icon" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_status_label"
+                            android:textColor="@color/add_status_icon"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_status_tech"
+                            android:textColor="@color/vault_teal_btn"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+
