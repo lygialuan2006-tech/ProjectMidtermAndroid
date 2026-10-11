@@ -164,7 +164,7 @@
                             app:tint="@color/vault_neon" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Nút hiển thị/ẩn PIN (Mắt) -->
+                    <!-- Nút hiển thị/ẩn PIN (Mắt selector) -->
                     <ImageView
                         android:id="@+id/ivTogglePin"
                         android:layout_width="36dp"
@@ -172,10 +172,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="6dp"
                         android:layout_toStartOf="@id/btnAuthTouch"
-                        android:alpha="0.6"
                         android:contentDescription="@string/cd_toggle_pin"
                         android:padding="6dp"
-                        android:src="@android:drawable/ic_menu_view"
+                        android:src="@drawable/selector_eye_toggle"
                         app:tint="@color/vault_text_gray" />
 
                     <!-- Ô nhập PIN -->
@@ -363,7 +362,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <!-- Thanh tìm kiếm có nút Command K -->
+        <!-- Thanh tìm kiếm & Lọc phân loại -->
         <LinearLayout
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
@@ -375,7 +374,7 @@
             android:minHeight="46dp"
             android:orientation="horizontal"
             android:paddingHorizontal="14dp"
-            android:paddingVertical="8dp">
+            android:paddingVertical="6dp">
 
             <ImageView
                 android:layout_width="20dp"
@@ -385,26 +384,29 @@
                 android:src="@drawable/ic_search"
                 app:tint="@color/vault_text_dim" />
 
-            <TextView
+            <EditText
+                android:id="@+id/etSearch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
+                android:background="@null"
+                android:hint="@string/dash_search_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:padding="0dp"
                 android:singleLine="true"
-                android:text="@string/dash_search_hint"
-                android:textColor="@color/vault_text_dim"
+                android:textColor="@color/vault_text_white"
+                android:textColorHint="@color/vault_text_dim"
                 android:textSize="13sp" />
 
-            <TextView
+            <Spinner
+                android:id="@+id/spCategoryFilter"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:background="@drawable/bg_icon_container"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="3dp"
-                android:text="@string/dash_command_k"
-                android:textColor="@color/vault_text_dim"
-                android:textSize="11sp" />
+                android:paddingHorizontal="4dp"
+                android:spinnerMode="dropdown" />
         </LinearLayout>
 
         <!-- Thống kê Header -->
@@ -557,13 +559,13 @@
     </RelativeLayout>
 
     <!-- ======================================================== -->
-    <!-- 3. MÀN HÌNH THÊM DỮ LIỆU MỚI (SCROLLABLE & FLEXIBLE) -->
+    <!-- 3. MÀN HÌNH THÊM / CHỈNH SỬA DỮ LIỆU (SCROLLABLE & FLEXIBLE) -->
     <!-- ======================================================== -->
     <ScrollView
         android:id="@+id/layoutAdd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8FAFA"
+        android:background="@color/add_screen_bg"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbars="none"
@@ -577,7 +579,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="24dp">
 
-            <!-- Top Header Nền Sáng -->
+            <!-- Top Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -604,11 +606,12 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="@string/add_btn_save"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/add_on_accent"
                     android:textSize="13sp"
                     app:cornerRadius="20dp" />
 
                 <TextView
+                    android:id="@+id/tvAddTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -619,7 +622,7 @@
                     android:paddingHorizontal="4dp"
                     android:singleLine="true"
                     android:text="@string/add_title"
-                    android:textColor="#192420"
+                    android:textColor="@color/add_title_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -629,7 +632,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardBackgroundColor="#E6F4F1"
+                app:cardBackgroundColor="@color/add_notice_bg"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -648,7 +651,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/add_label_title"
-                android:textColor="#2A3833"
+                android:textColor="@color/add_label_text"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -661,8 +664,8 @@
                 android:hint="@string/add_hint_title"
                 android:inputType="text"
                 android:paddingHorizontal="14dp"
-                android:textColor="#1A2420"
-                android:textColorHint="#94A39D"
+                android:textColor="@color/add_input_text"
+                android:textColorHint="@color/add_hint_text"
                 android:textSize="14sp" />
 
             <TextView
@@ -670,7 +673,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/add_label_category"
-                android:textColor="#2A3833"
+                android:textColor="@color/add_label_text"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -686,21 +689,21 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/add_cat_password"
-                    android:textColor="#2A3833" />
+                    android:textColor="@color/add_label_text" />
 
                 <RadioButton
                     android:id="@+id/rbBank"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_cat_bank"
-                    android:textColor="#2A3833" />
+                    android:textColor="@color/add_label_text" />
 
                 <RadioButton
                     android:id="@+id/rbNote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_cat_note"
-                    android:textColor="#2A3833" />
+                    android:textColor="@color/add_label_text" />
             </RadioGroup>
 
             <TextView
@@ -708,7 +711,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/add_label_content"
-                android:textColor="#2A3833"
+                android:textColor="@color/add_label_text"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -722,8 +725,8 @@
                 android:hint="@string/add_hint_content"
                 android:inputType="textMultiLine"
                 android:padding="14dp"
-                android:textColor="#1A2420"
-                android:textColorHint="#94A39D"
+                android:textColor="@color/add_input_text"
+                android:textColorHint="@color/add_hint_text"
                 android:textSize="14sp" />
 
             <CheckBox
@@ -732,8 +735,22 @@
                 android:layout_marginTop="16dp"
                 android:checked="true"
                 android:text="@string/add_checkbox_clipboard"
-                android:textColor="#2A3833"
+                android:textColor="@color/add_label_text"
                 android:textSize="13sp" />
+
+            <!-- Nút Xóa bản ghi (chỉ hiển thị khi Edit Note) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteNote"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#D93838"
+                android:text="@string/add_btn_delete"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="12dp" />
 
             <View
                 android:layout_width="match_parent"
@@ -746,7 +763,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#E6F4F1"
+                app:cardBackgroundColor="@color/add_notice_bg"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="0dp">
 
@@ -761,7 +778,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="@string/cd_shield_icon"
                         android:src="@drawable/ic_shield"
-                        app:tint="#42574F" />
+                        app:tint="@color/add_status_icon" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -773,7 +790,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/add_status_label"
-                            android:textColor="#42574F"
+                            android:textColor="@color/add_status_icon"
                             android:textSize="12sp" />
 
                         <TextView

@@ -4,12 +4,17 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -39,13 +44,14 @@ public class MainActivity extends AppCompatActivity {
     private NoteAdapter noteAdapter;
     private AppLifecycleTracker lifecycleTracker;
     private boolean isPinVisible = false;
+    private long editingNoteId = -1L; // -1L nghia la dang o che do Them moi
     private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Chống quay video / chụp màn hình (FLAG_SECURE)
+        // 1. Chong quay video / chup man hinh (FLAG_SECURE)
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -61,15 +67,42 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 2. Đăng ký theo dõi vòng đời: Khóa app khi ra ngoài
+        // 2. Dang ky theo doi vong doi: Khoa app khi ra ngoai (Grace period 60s)
         lifecycleTracker = new AppLifecycleTracker(() -> runOnUiThread(this::lockVault));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleTracker);
 
+        // 3. Dang ky OnBackPressedCallback (Swipe-back noi bo)
+        setupBackNavigation();
+
         setupRecyclerView();
+        setupSearchAndFilter();
         setupListeners();
 
-        // 3. Mặc định luôn ở trạng thái khóa ban đầu và xóa trắng ô PIN
+        // 4. Mac dinh luon o trang thai khoa ban dau
         lockVault();
+    }
+
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.layoutAdd.getVisibility() == View.VISIBLE) {
+                    // Dang o man hinh Them/Sua -> Quay ve Dashboard
+                    resetAddForm();
+                    hideKeyboard();
+                    binding.layoutAdd.setVisibility(View.GONE);
+                    binding.layoutDashboard.setVisibility(View.VISIBLE);
+                } else if (binding.layoutDashboard.getVisibility() == View.VISIBLE) {
+                    // Dang o Dashboard -> Khoa vault quay ve Auth
+                    lockVault();
+                } else {
+                    // Dang o Auth -> Cho phep thoat app
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -77,31 +110,72 @@ public class MainActivity extends AppCompatActivity {
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(this));
         binding.rvNotes.setAdapter(noteAdapter);
 
-        // Xem và sao chép nội dung giải mã khi nhấn vào từng thẻ
-        noteAdapter.setOnItemClickListener(this::showNoteDetailDialog);
+        // Nhap vao tung the de mo man hinh Chinh sua (Edit Note)
+        noteAdapter.setOnItemClickListener(this::openEditNoteScreen);
+    }
+
+    private void setupSearchAndFilter() {
+        // Setup Dropdown Loc danh muc
+        String[] categories = new String[]{
+                getString(R.string.filter_all),
+                getString(R.string.add_cat_password),
+                getString(R.string.add_cat_bank),
+                getString(R.string.add_cat_note)
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+        binding.spCategoryFilter.setAdapter(adapter);
+
+        // Lang nghe loc tim kiem live
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                triggerFilter();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.spCategoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                triggerFilter();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void triggerFilter() {
+        String query = binding.etSearch.getText() != null ? binding.etSearch.getText().toString() : "";
+        String selectedCat = binding.spCategoryFilter.getSelectedItem() != null ? binding.spCategoryFilter.getSelectedItem().toString() : "";
+        noteAdapter.applyFilter(query, selectedCat, this);
     }
 
     private void setupListeners() {
-        // --- 1. MÀN HÌNH KHÓA (AUTH) ---
+        // --- 1. MAN HINH KHOA (AUTH) ---
         binding.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
 
-        // Bật / tắt ẩn hiện Master PIN khi bấm icon con mắt
+        // Bat / tat an hien Master PIN (Dung selector)
         binding.ivTogglePin.setOnClickListener(v -> {
+            isPinVisible = !isPinVisible;
+            binding.ivTogglePin.setSelected(isPinVisible);
             if (isPinVisible) {
-                binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-                binding.ivTogglePin.setAlpha(0.6f);
-                isPinVisible = false;
-            } else {
                 binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER);
-                binding.ivTogglePin.setAlpha(1.0f);
-                isPinVisible = true;
+            } else {
+                binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             }
             if (binding.etMasterPin.getText() != null) {
                 binding.etMasterPin.setSelection(binding.etMasterPin.getText().length());
             }
         });
 
-        // Xác thực bằng Master PIN
+        // Xac thuc bang Master PIN
         binding.btnAuthPin.setOnClickListener(v -> {
             String enteredPin = binding.etMasterPin.getText().toString().trim();
 
@@ -112,27 +186,23 @@ public class MainActivity extends AppCompatActivity {
 
             if (DEFAULT_MASTER_PIN.equals(enteredPin)) {
                 hideKeyboard();
-                binding.etMasterPin.setText(""); // Xóa trắng PIN sau khi mở thành công
+                binding.etMasterPin.setText("");
                 unlockDatabase();
             } else {
                 Toast.makeText(this, getString(R.string.toast_pin_incorrect), Toast.LENGTH_SHORT).show();
             }
         });
 
-        // --- 2. MÀN HÌNH DASHBOARD ---
-        // Nút Khóa: Đóng database, xóa trắng PIN và trở về màn hình xác thực
+        // --- 2. MAN HINH DASHBOARD ---
         binding.btnLock.setOnClickListener(v -> {
             lockVault();
             Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
         });
 
-        // Nút thêm mới bản ghi (+)
-        binding.fabAdd.setOnClickListener(v -> {
-            binding.layoutDashboard.setVisibility(View.GONE);
-            binding.layoutAdd.setVisibility(View.VISIBLE);
-        });
+        // Nut them moi ban ghi (+) -> Open Form Add Mode
+        binding.fabAdd.setOnClickListener(v -> openAddNoteScreen());
 
-        // Chạy kiểm thử hiệu năng Benchmark độc lập
+        // Benchmark test
         binding.btnBenchmark.setOnClickListener(v -> {
             if (standardDb != null && encryptedDb != null) {
                 Toast.makeText(this, getString(R.string.toast_benchmark_running), Toast.LENGTH_SHORT).show();
@@ -140,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
                     BenchmarkManager bm = new BenchmarkManager(standardDb, encryptedDb);
                     BenchmarkManager.BenchmarkResult res = bm.runBatchInsertBenchmark(1000);
 
-                    // Đảm bảo dữ liệu hiển thị không bị mất
                     initDefaultDataIfEmpty();
 
                     runOnUiThread(() -> {
@@ -151,70 +220,128 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // --- 3. MÀN HÌNH THÊM MỚI ---
+        // --- 3. MAN HINH THEM / CHINH SUA ---
         binding.btnBack.setOnClickListener(v -> {
             hideKeyboard();
+            resetAddForm();
             binding.layoutAdd.setVisibility(View.GONE);
             binding.layoutDashboard.setVisibility(View.VISIBLE);
         });
 
-        binding.btnSaveData.setOnClickListener(v -> {
-            String title = binding.etTitleInput.getText().toString().trim();
-            String content = binding.etContentInput.getText().toString().trim();
+        binding.btnSaveData.setOnClickListener(v -> saveOrUpdateNote());
 
-            if (title.isEmpty() || content.isEmpty()) {
-                Toast.makeText(this, getString(R.string.toast_input_required), Toast.LENGTH_SHORT).show();
-                return;
-            }
+        binding.btnDeleteNote.setOnClickListener(v -> confirmDeleteNote());
+    }
 
-            hideKeyboard();
+    private void openAddNoteScreen() {
+        editingNoteId = -1L;
+        resetAddForm();
+        binding.tvAddTitle.setText(R.string.add_title);
+        binding.btnDeleteNote.setVisibility(View.GONE);
+        binding.layoutDashboard.setVisibility(View.GONE);
+        binding.layoutAdd.setVisibility(View.VISIBLE);
+    }
 
-            String category = getString(R.string.add_cat_password);
-            if (binding.rbBank.isChecked()) {
-                category = getString(R.string.add_cat_bank);
-            } else if (binding.rbNote.isChecked()) {
-                category = getString(R.string.add_cat_note);
-            }
+    private void openEditNoteScreen(SecureNote note) {
+        editingNoteId = note.getId();
+        binding.tvAddTitle.setText(R.string.add_title_edit);
+        binding.etTitleInput.setText(note.getTitle());
+        binding.etContentInput.setText(note.getSecretContent());
 
-            final String finalCategory = category;
+        String bankCat = getString(R.string.add_cat_bank);
+        String noteCat = getString(R.string.add_cat_note);
 
-            backgroundExecutor.execute(() -> {
+        if (bankCat.equalsIgnoreCase(note.getCategory()) || "Thẻ ngân hàng".equalsIgnoreCase(note.getCategory())) {
+            binding.rbBank.setChecked(true);
+        } else if (noteCat.equalsIgnoreCase(note.getCategory()) || "Ghi chú".equalsIgnoreCase(note.getCategory())) {
+            binding.rbNote.setChecked(true);
+        } else {
+            binding.rbPassword.setChecked(true);
+        }
+
+        binding.btnDeleteNote.setVisibility(View.VISIBLE);
+        binding.layoutDashboard.setVisibility(View.GONE);
+        binding.layoutAdd.setVisibility(View.VISIBLE);
+    }
+
+    private void resetAddForm() {
+        editingNoteId = -1L;
+        binding.etTitleInput.setText("");
+        binding.etContentInput.setText("");
+        binding.rbPassword.setChecked(true);
+    }
+
+    private void saveOrUpdateNote() {
+        String title = binding.etTitleInput.getText().toString().trim();
+        String content = binding.etContentInput.getText().toString().trim();
+
+        if (title.isEmpty() || content.isEmpty()) {
+            Toast.makeText(this, getString(R.string.toast_input_required), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        hideKeyboard();
+
+        String category = getString(R.string.add_cat_password);
+        if (binding.rbBank.isChecked()) {
+            category = getString(R.string.add_cat_bank);
+        } else if (binding.rbNote.isChecked()) {
+            category = getString(R.string.add_cat_note);
+        }
+
+        final String finalCategory = category;
+
+        backgroundExecutor.execute(() -> {
+            if (editingNoteId != -1L) {
+                // CHINH SUA: Chi ghi vao encryptedDb
+                SecureNote note = new SecureNote(title, finalCategory, content);
+                note.setId(editingNoteId);
+                note.setTimestamp(System.currentTimeMillis());
+                if (encryptedDb != null) {
+                    encryptedDb.noteDao().updateNote(note);
+                }
+            } else {
+                // THEM MOI: Chi ghi vao encryptedDb (Bao mat: Khong ghi plaintext)
                 SecureNote note = new SecureNote(title, finalCategory, content);
                 if (encryptedDb != null) {
                     encryptedDb.noteDao().insertNote(note);
                 }
-                if (standardDb != null) {
-                    standardDb.noteDao().insertNote(note);
-                }
+            }
 
-                runOnUiThread(() -> {
-                    binding.etTitleInput.setText("");
-                    binding.etContentInput.setText("");
-                    binding.rbPassword.setChecked(true);
+            runOnUiThread(() -> {
+                boolean wasEdit = (editingNoteId != -1L);
+                resetAddForm();
+                binding.layoutAdd.setVisibility(View.GONE);
+                binding.layoutDashboard.setVisibility(View.VISIBLE);
+                loadNotesFromDatabase();
 
-                    binding.layoutAdd.setVisibility(View.GONE);
-                    binding.layoutDashboard.setVisibility(View.VISIBLE);
-                    loadNotesFromDatabase();
-
-                    Toast.makeText(this, getString(R.string.toast_save_success), Toast.LENGTH_SHORT).show();
-                });
+                String msg = wasEdit ? getString(R.string.toast_update_success) : getString(R.string.toast_save_success);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
             });
         });
     }
 
-    private void showNoteDetailDialog(SecureNote note) {
+    private void confirmDeleteNote() {
+        if (editingNoteId == -1L) return;
+
         new AlertDialog.Builder(this)
-                .setTitle(note.getTitle())
-                .setMessage(getString(R.string.dialog_detail_category) + note.getCategory() + getString(R.string.dialog_detail_content) + note.getSecretContent())
-                .setPositiveButton(getString(R.string.dialog_btn_copy), (dialog, which) -> {
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("SecureVault", note.getSecretContent());
-                    if (clipboard != null) {
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(this, getString(R.string.toast_copy_success), Toast.LENGTH_SHORT).show();
-                    }
+                .setTitle(R.string.add_btn_delete)
+                .setMessage(R.string.dialog_delete_confirm)
+                .setPositiveButton(R.string.dialog_btn_delete, (dialog, which) -> {
+                    backgroundExecutor.execute(() -> {
+                        if (encryptedDb != null) {
+                            encryptedDb.noteDao().deleteNoteById(editingNoteId);
+                        }
+                        runOnUiThread(() -> {
+                            resetAddForm();
+                            binding.layoutAdd.setVisibility(View.GONE);
+                            binding.layoutDashboard.setVisibility(View.VISIBLE);
+                            loadNotesFromDatabase();
+                            Toast.makeText(this, getString(R.string.toast_delete_success), Toast.LENGTH_SHORT).show();
+                        });
+                    });
                 })
-                .setNegativeButton(getString(R.string.dialog_btn_close), null)
+                .setNegativeButton(R.string.dialog_btn_close, null)
                 .show();
     }
 
@@ -253,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
             encryptedDb = AppDatabase.getEncryptedDatabase(getApplicationContext(), passphrase);
             standardDb = AppDatabase.getStandardDatabase(getApplicationContext());
 
-            // Tự dọn sạch dữ liệu rác nếu có và nạp 3 bản ghi mẫu ban đầu
             initDefaultDataIfEmpty();
 
             runOnUiThread(() -> {
@@ -270,7 +396,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDefaultDataIfEmpty() {
         int count = encryptedDb.noteDao().getCount();
-        // Nếu database trống hoặc đang bị kẹt > 50 bản ghi thử nghiệm cũ: làm sạch và nạp lại chuẩn
         if (count == 0 || count > 50) {
             encryptedDb.noteDao().deleteAll();
             encryptedDb.noteDao().insertNote(new SecureNote(
@@ -294,7 +419,8 @@ public class MainActivity extends AppCompatActivity {
             List<SecureNote> notes = encryptedDb.noteDao().getAllNotes();
             runOnUiThread(() -> {
                 noteAdapter.setNotes(notes);
-                binding.tvCount.setText(getString(R.string.dash_count_format, notes.size()));
+                triggerFilter();
+                binding.tvCount.setText(getResources().getQuantityString(R.plurals.dash_count, notes.size(), notes.size()));
             });
         });
     }
@@ -305,12 +431,10 @@ public class MainActivity extends AppCompatActivity {
             lifecycleTracker.setUnlocked(false);
         }
 
-        // Xóa hoàn toàn ký tự PIN trong ô nhập
         if (binding != null && binding.etMasterPin != null) {
             binding.etMasterPin.setText("");
-            // Reset chế độ xem về dạng mật khẩu ẩn
             binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-            binding.ivTogglePin.setAlpha(0.6f);
+            binding.ivTogglePin.setSelected(false);
             isPinVisible = false;
         }
 
@@ -333,6 +457,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (lifecycleTracker != null) {
+            lifecycleTracker.shutdown();
+        }
         backgroundExecutor.shutdown();
     }
 }

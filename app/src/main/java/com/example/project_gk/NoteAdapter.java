@@ -20,6 +20,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         void onItemClick(SecureNote note);
     }
 
+    private List<SecureNote> allNotes = new ArrayList<>();
     private List<SecureNote> notes = new ArrayList<>();
     private OnItemClickListener listener;
 
@@ -28,7 +29,33 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     public void setNotes(List<SecureNote> notes) {
-        this.notes = notes;
+        this.allNotes = new ArrayList<>(notes);
+        this.notes = new ArrayList<>(notes);
+        notifyDataSetChanged();
+    }
+
+    public void applyFilter(String query, String category, Context context) {
+        String cleanQuery = query == null ? "" : query.trim().toLowerCase(Locale.getDefault());
+        String allStrVi = "Tất cả";
+        String allStrEn = "All";
+
+        List<SecureNote> filtered = new ArrayList<>();
+        for (SecureNote note : allNotes) {
+            boolean matchesQuery = cleanQuery.isEmpty()
+                    || (note.getTitle() != null && note.getTitle().toLowerCase(Locale.getDefault()).contains(cleanQuery))
+                    || (note.getSecretContent() != null && note.getSecretContent().toLowerCase(Locale.getDefault()).contains(cleanQuery));
+
+            boolean matchesCategory = category == null
+                    || category.equalsIgnoreCase(allStrVi)
+                    || category.equalsIgnoreCase(allStrEn)
+                    || (note.getCategory() != null && note.getCategory().equalsIgnoreCase(category));
+
+            if (matchesQuery && matchesCategory) {
+                filtered.add(note);
+            }
+        }
+
+        this.notes = filtered;
         notifyDataSetChanged();
     }
 

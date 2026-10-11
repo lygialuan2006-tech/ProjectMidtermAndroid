@@ -3,6 +3,7 @@ package com.example.project_gk;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ public interface NoteDao {
 
     @Insert
     void insertBatch(List<SecureNote> notes);
+
+    @Update
+    int updateNote(SecureNote note);
+
+    @Query("DELETE FROM secure_notes WHERE id = :id")
+    int deleteNoteById(long id);
 
     @Query("SELECT COUNT(*) FROM secure_notes")
     int getCount();

@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="›"
+            android:text="@string/item_chevron"
             android:textColor="@color/vault_text_dim"
             android:textSize="24sp"
             android:textStyle="bold" />

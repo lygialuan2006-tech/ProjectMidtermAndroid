@@ -10,25 +10,34 @@
     <string name="auth_pin_hint">Nhập 6 số PIN...</string>
     <string name="auth_btn_unlock">XÁC THỰC &amp; MỞ KHÓA KHO LƯU TRỮ</string>
     <string name="keystore_alias_label">Keystore Alias</string>
-    <string name="keystore_alias_value">vault_master_key</string>
+    <string name="keystore_alias_value" translatable="false">vault_master_key</string>
 
     <!-- Dashboard -->
-    <string name="dash_status_offline">LOCAL · OFFLINE</string>
+    <string name="dash_status_offline" translatable="false">LOCAL · OFFLINE</string>
     <string name="dash_btn_benchmark">⏱ Benchmark</string>
     <string name="dash_btn_lock">Khóa</string>
     <string name="dash_search_hint">Tìm kiếm dữ liệu đã mã hóa...</string>
-    <string name="dash_command_k">⌘ K</string>
-    <string name="dash_sub_status">AES-256 · ĐÃ XÁC THỰC</string>
+    <string name="dash_command_k" translatable="false">⌘ K</string>
+    <string name="dash_sub_status" translatable="false">AES-256 · ĐÃ XÁC THỰC</string>
     <string name="dash_sub_title">Dữ liệu được mã hóa</string>
-    <string name="dash_count_format">%02d MỤC</string>
+    <string name="filter_all">Tất cả</string>
+
+    <!-- Plurals for item count -->
+    <plurals name="dash_count">
+        <item quantity="one">%02d MỤC</item>
+        <item quantity="other">%02d MỤC</item>
+    </plurals>
+
     <string name="dash_notice_text">Khóa chính được bảo vệ trên thiết bị. Không dữ liệu nào rời khỏi SecureVault.</string>
     <string name="dash_db_footer_title">• CƠ SỞ DỮ LIỆU CỤC BỘ</string>
-    <string name="dash_db_footer_path">/data/data/com.example.project_gk/databases/vault.db</string>
+    <string name="dash_db_footer_path" translatable="false">/data/data/com.example.project_gk/databases/vault.db</string>
 
     <!-- Add Screen -->
     <string name="add_btn_back">‹ Quay lại</string>
     <string name="add_title">Thêm Dữ Liệu Mới</string>
+    <string name="add_title_edit">Chỉnh Sửa Bản Ghi</string>
     <string name="add_btn_save">Lưu</string>
+    <string name="add_btn_delete">Xóa bản ghi</string>
     <string name="add_encrypted_notice">DỮ LIỆU ĐƯỢC MÃ HÓA TRÊN THIẾT BỊ</string>
     <string name="add_label_title">Tiêu đề bản ghi:</string>
     <string name="add_hint_title">Ví dụ: Mã PIN</string>
@@ -40,7 +49,7 @@
     <string name="add_hint_content">Nhập nội dung cần mã hóa tại đây...</string>
     <string name="add_checkbox_clipboard">Tự động xóa khỏi Clipboard sau 30 giây</string>
     <string name="add_status_label">Trạng thái mã hóa: Sẵn sàng ghi xuống</string>
-    <string name="add_status_tech">SQLCipher</string>
+    <string name="add_status_tech" translatable="false">SQLCipher</string>
 
     <!-- Item Note -->
     <string name="item_encrypted_badge">MÃ HÓA</string>
@@ -48,20 +57,28 @@
     <string name="item_sub_password">Email · Mật khẩu · Mã 2FA</string>
     <string name="item_sub_note">Mã khôi phục · Ghi chú bảo mật</string>
     <string name="item_date_prefix">CẬP NHẬT </string>
+    <string name="item_chevron" translatable="false">›</string>
 
     <!-- Messages & Toasts -->
     <string name="toast_pin_empty">Vui lòng nhập Master PIN!</string>
     <string name="toast_pin_incorrect">Mã PIN không chính xác! (Mặc định: 123456)</string>
     <string name="toast_vault_locked">Đã khóa kho dữ liệu!</string>
     <string name="toast_benchmark_running">Đang đo đạc hiệu năng (1,000 bản ghi)...</string>
+
+    <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
     <string name="toast_benchmark_done_format">Hoàn tất! SQLite: %1$d ms | SQLCipher: %2$d ms</string>
+
     <string name="toast_input_required">Vui lòng nhập đủ Tiêu đề và Nội dung!</string>
     <string name="toast_save_success">Đã mã hóa và lưu an toàn vào SQLCipher!</string>
+    <string name="toast_update_success">Đã cập nhật bản ghi an toàn!</string>
+    <string name="toast_delete_success">Đã xóa bản ghi thành công!</string>
     <string name="toast_copy_success">Đã sao chép vào Clipboard!</string>
     <string name="dialog_detail_category">Phân loại: </string>
     <string name="dialog_detail_content">\n\nNội dung bí mật (Đã giải mã AES-256):\n</string>
     <string name="dialog_btn_copy">Sao chép</string>
     <string name="dialog_btn_close">Đóng</string>
+    <string name="dialog_delete_confirm">Bạn có chắc chắn muốn xóa bản ghi này khỏi kho lưu trữ mã hóa?</string>
+    <string name="dialog_btn_delete">Xóa</string>
     <string name="biometric_prompt_title">Xác thực SecureVault</string>
     <string name="biometric_prompt_subtitle">Chạm vân tay để giải mã khóa kho lưu trữ</string>
     <string name="biometric_error_prefix">Lỗi xác thực: </string>
