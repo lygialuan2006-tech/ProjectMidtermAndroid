@@ -9,9 +9,10 @@
     <string name="keystore_alias_label">Keystore Alias</string>
 
     <!-- Dashboard -->
-    <string name="dash_btn_benchmark">⏱ Benchmark</string>
+    <string name="dash_btn_benchmark">Benchmark</string>
     <string name="dash_btn_lock">Lock</string>
     <string name="dash_search_hint">Search encrypted data…</string>
+    <string name="dash_sub_status">AES-256</string>
     <string name="dash_sub_title">Encrypted Data</string>
     <string name="filter_all">All</string>
     <string name="filter_toast">Filter: %1$s</string>
@@ -26,7 +27,7 @@
     <string name="dash_db_footer_title">• LOCAL DATABASE</string>
 
     <!-- Add Screen -->
-    <string name="add_btn_back">‹ Back</string>
+    <string name="add_btn_back"></string>
     <string name="add_title">Add New Record</string>
     <string name="add_title_edit">Edit Record</string>
     <string name="add_btn_save">Save</string>
@@ -52,12 +53,14 @@
 
     <!-- Messages & Toasts -->
     <string name="toast_pin_empty">Please enter Master PIN!</string>
-    <string name="toast_pin_incorrect">Incorrect PIN! (Default: 123456)</string>
+    <string name="toast_pin_incorrect">Incorrect PIN!</string>
+    <string name="toast_pin_incorrect_format">Incorrect PIN! %1$d attempts remaining.</string>
+    <string name="toast_pin_lockout">Too many failed attempts! Try again in 30s.</string>
     <string name="toast_vault_locked">Vault locked!</string>
-    <string name="toast_benchmark_running">Running benchmark test (1,000 records)…</string>
+    <string name="toast_benchmark_running">Running benchmark test (1,000 records)</string>
 
     <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
-    <string name="toast_benchmark_done_format">Completed! SQLite: %1$d ms | SQLCipher: %2$d ms</string>
+    <string name="toast_benchmark_done_format">SQLite: %1$d ms - SQLCipher: %2$d ms</string>
 
     <string name="toast_input_required">Please enter both Title and Content!</string>
     <string name="toast_save_success">Encrypted and securely saved to SQLCipher!</string>

@@ -14,7 +14,7 @@
     <string name="dash_btn_benchmark">⏱ Benchmark</string>
     <string name="dash_btn_lock">Khóa</string>
     <string name="dash_search_hint">Tìm kiếm dữ liệu đã mã hóa…</string>
-    <string name="dash_sub_status" translatable="false">AES-256 · ĐÃ XÁC THỰC</string>
+    <string name="dash_sub_status">AES-256</string>
     <string name="dash_sub_title">Dữ liệu được mã hóa</string>
     <string name="filter_all">Tất cả</string>
     <string name="filter_toast">Lọc: %1$s</string>
@@ -30,7 +30,7 @@
     <string name="dash_db_footer_path" translatable="false">/data/data/com.example.project_gk/databases/vault.db</string>
 
     <!-- Add Screen -->
-    <string name="add_btn_back">‹ Quay lại</string>
+    <string name="add_btn_back"></string>
     <string name="add_title">Thêm Dữ Liệu Mới</string>
     <string name="add_title_edit">Chỉnh Sửa Bản Ghi</string>
     <string name="add_btn_save">Lưu</string>
@@ -58,9 +58,11 @@
 
     <!-- Messages & Toasts -->
     <string name="toast_pin_empty">Vui lòng nhập Master PIN!</string>
-    <string name="toast_pin_incorrect">Mã PIN không chính xác! (Mặc định: 123456)</string>
+    <string name="toast_pin_incorrect">Mã PIN không chính xác!</string>
+    <string name="toast_pin_incorrect_format">Mã PIN sai! Còn lại %1$d lần thử.</string>
+    <string name="toast_pin_lockout">Nhập sai quá 5 lần! Thử lại sau 30 giây.</string>
     <string name="toast_vault_locked">Đã khóa kho dữ liệu!</string>
-    <string name="toast_benchmark_running">Đang đo đạc hiệu năng (1,000 bản ghi)…</string>
+    <string name="toast_benchmark_running">Đang đo đạc hiệu năng (1,000 bản ghi × 5 vòng)…</string>
 
     <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
     <string name="toast_benchmark_done_format">Hoàn tất! SQLite: %1$d ms | SQLCipher: %2$d ms</string>
