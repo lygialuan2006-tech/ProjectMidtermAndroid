@@ -1,7 +1,14 @@
 package com.example.project_gk;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -10,8 +17,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,12 +51,15 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPinVisible = false;
     private long editingNoteId = -1L;
     private String selectedCategory = "";
+
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 1. Chống chụp/quay màn hình (FLAG_SECURE)
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // 2. Tự động khóa kho dữ liệu khi ẩn app
         lifecycleTracker = new AppLifecycleTracker(() -> runOnUiThread(this::lockVault));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleTracker);
 
@@ -83,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 if (binding.layoutAdd.getVisibility() == View.VISIBLE) {
                     resetAddForm();
                     hideKeyboard();
-                    binding.layoutAdd.setVisibility(View.GONE);
-                    binding.layoutDashboard.setVisibility(View.VISIBLE);
+                    crossFade(binding.layoutAdd, binding.layoutDashboard);
                 } else if (binding.layoutDashboard.getVisibility() == View.VISIBLE) {
                     lockVault();
                 } else {
@@ -99,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         noteAdapter = new NoteAdapter();
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvNotes.setHasFixedSize(true);
         binding.rvNotes.setAdapter(noteAdapter);
         noteAdapter.setOnItemClickListener(this::openEditNoteScreen);
     }
@@ -144,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        // --- 1. MÀN HÌNH KHÓA ---
         binding.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
 
         binding.ivTogglePin.setOnClickListener(v -> {
@@ -176,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // --- 2. MÀN HÌNH DASHBOARD ---
         binding.btnLock.setOnClickListener(v -> {
             lockVault();
             Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
@@ -200,11 +213,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // --- 3. MÀN HÌNH THÊM / SỬA ---
         binding.btnBack.setOnClickListener(v -> {
             hideKeyboard();
             resetAddForm();
-            binding.layoutAdd.setVisibility(View.GONE);
-            binding.layoutDashboard.setVisibility(View.VISIBLE);
+            crossFade(binding.layoutAdd, binding.layoutDashboard);
         });
 
         binding.btnSaveData.setOnClickListener(v -> saveOrUpdateNote());
@@ -217,8 +230,7 @@ public class MainActivity extends AppCompatActivity {
         resetAddForm();
         binding.tvAddTitle.setText(R.string.add_title);
         binding.btnDeleteNote.setVisibility(View.GONE);
-        binding.layoutDashboard.setVisibility(View.GONE);
-        binding.layoutAdd.setVisibility(View.VISIBLE);
+        crossFade(binding.layoutDashboard, binding.layoutAdd);
     }
 
     private void openEditNoteScreen(SecureNote note) {
@@ -239,8 +251,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.btnDeleteNote.setVisibility(View.VISIBLE);
-        binding.layoutDashboard.setVisibility(View.GONE);
-        binding.layoutAdd.setVisibility(View.VISIBLE);
+        crossFade(binding.layoutDashboard, binding.layoutAdd);
     }
 
     private void resetAddForm() {
@@ -285,11 +296,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            // Xử lý clipboard TTL 30s nếu checkbox được kích hoạt
+            runOnUiThread(() -> copyToClipboardWithAutoClear(content));
+
             runOnUiThread(() -> {
                 boolean wasEdit = (editingNoteId != -1L);
                 resetAddForm();
-                binding.layoutAdd.setVisibility(View.GONE);
-                binding.layoutDashboard.setVisibility(View.VISIBLE);
+                crossFade(binding.layoutAdd, binding.layoutDashboard);
                 loadNotesFromDatabase();
 
                 String msg = wasEdit ? getString(R.string.toast_update_success) : getString(R.string.toast_save_success);
@@ -310,14 +323,54 @@ public class MainActivity extends AppCompatActivity {
                     }
                     runOnUiThread(() -> {
                         resetAddForm();
-                        binding.layoutAdd.setVisibility(View.GONE);
-                        binding.layoutDashboard.setVisibility(View.VISIBLE);
+                        crossFade(binding.layoutAdd, binding.layoutDashboard);
                         loadNotesFromDatabase();
                         Toast.makeText(this, getString(R.string.toast_delete_success), Toast.LENGTH_SHORT).show();
                     });
                 }))
                 .setNegativeButton(R.string.dialog_btn_close, null)
                 .show();
+    }
+
+    // Hiệu ứng chuyển đổi màn hình mượt mà
+    private void crossFade(View fromView, View toView) {
+        toView.setAlpha(0f);
+        toView.setVisibility(View.VISIBLE);
+
+        toView.animate()
+                .alpha(1f)
+                .setDuration(220)
+                .setListener(null);
+
+        fromView.animate()
+                .alpha(0f)
+                .setDuration(220)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        fromView.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    // Cơ chế xóa sạch Clipboard sau 30 giây bảo mật
+    private void copyToClipboardWithAutoClear(String secretText) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            ClipData clip = ClipData.newPlainText("SecureVault Data", secretText);
+            clipboard.setPrimaryClip(clip);
+
+            mainHandler.postDelayed(() -> {
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        clipboard.clearPrimaryClip();
+                    } else {
+                        clipboard.setPrimaryClip(ClipData.newPlainText("", ""));
+                    }
+                    Toast.makeText(getApplicationContext(), "🛡️ Clipboard đã được xóa tự động!", Toast.LENGTH_SHORT).show();
+                } catch (Exception ignored) {}
+            }, 30000);
+        }
     }
 
     private void showBiometricPrompt() {
@@ -361,9 +414,7 @@ public class MainActivity extends AppCompatActivity {
                 if (lifecycleTracker != null) {
                     lifecycleTracker.setUnlocked(true);
                 }
-                binding.layoutAuth.setVisibility(View.GONE);
-                binding.layoutAdd.setVisibility(View.GONE);
-                binding.layoutDashboard.setVisibility(View.VISIBLE);
+                crossFade(binding.layoutAuth, binding.layoutDashboard);
                 loadNotesFromDatabase();
             });
         });
@@ -419,6 +470,7 @@ public class MainActivity extends AppCompatActivity {
             binding.layoutDashboard.setVisibility(View.GONE);
             binding.layoutAdd.setVisibility(View.GONE);
             binding.layoutAuth.setVisibility(View.VISIBLE);
+            binding.layoutAuth.setAlpha(1.0f);
         }
     }
 
