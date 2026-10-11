@@ -1,11 +1,8 @@
-<resources>
+﻿<resources>
     <string name="app_name">SecureVault</string>
-    <string name="security_badge">• BẢO MẬT</string>
+    <string name="security_badge" translatable="false">• BẢO MẬT</string>
     <string name="auth_title">DỮ LIỆU ĐÃ ĐƯỢC MÃ HÓA</string>
     <string name="auth_subtitle">Chạm vân tay hoặc nhập mã PIN Master để giải mã khóa truy cập (Keystore)</string>
-    <string name="auth_touch_title">Chạm cảm ứng</string>
-    <string name="auth_touch_subtitle">Xác thực nhanh bằng vân tay</string>
-    <string name="auth_or">HOẶC</string>
     <string name="auth_pin_label">Nhập Master PIN</string>
     <string name="auth_pin_hint">Nhập 6 số PIN...</string>
     <string name="auth_btn_unlock">XÁC THỰC &amp; MỞ KHÓA KHO LƯU TRỮ</string>
@@ -17,10 +14,10 @@
     <string name="dash_btn_benchmark">⏱ Benchmark</string>
     <string name="dash_btn_lock">Khóa</string>
     <string name="dash_search_hint">Tìm kiếm dữ liệu đã mã hóa...</string>
-    <string name="dash_command_k" translatable="false">⌘ K</string>
     <string name="dash_sub_status" translatable="false">AES-256 · ĐÃ XÁC THỰC</string>
     <string name="dash_sub_title">Dữ liệu được mã hóa</string>
     <string name="filter_all">Tất cả</string>
+    <string name="filter_toast">Lọc: %1$s</string>
 
     <!-- Plurals for item count -->
     <plurals name="dash_count">
@@ -33,7 +30,7 @@
     <string name="dash_db_footer_path" translatable="false">/data/data/com.example.project_gk/databases/vault.db</string>
 
     <!-- Add Screen -->
-    <string name="add_btn_back">‹ Quay lại</string>
+    <string name="add_btn_back"></string>
     <string name="add_title">Thêm Dữ Liệu Mới</string>
     <string name="add_title_edit">Chỉnh Sửa Bản Ghi</string>
     <string name="add_btn_save">Lưu</string>
@@ -73,9 +70,6 @@
     <string name="toast_update_success">Đã cập nhật bản ghi an toàn!</string>
     <string name="toast_delete_success">Đã xóa bản ghi thành công!</string>
     <string name="toast_copy_success">Đã sao chép vào Clipboard!</string>
-    <string name="dialog_detail_category">Phân loại: </string>
-    <string name="dialog_detail_content">\n\nNội dung bí mật (Đã giải mã AES-256):\n</string>
-    <string name="dialog_btn_copy">Sao chép</string>
     <string name="dialog_btn_close">Đóng</string>
     <string name="dialog_delete_confirm">Bạn có chắc chắn muốn xóa bản ghi này khỏi kho lưu trữ mã hóa?</string>
     <string name="dialog_btn_delete">Xóa</string>
@@ -99,4 +93,5 @@
     <string name="cd_toggle_pin">Ẩn/hiện mã PIN</string>
     <string name="cd_search_icon">Search Icon</string>
     <string name="cd_add_icon">Add Note Icon</string>
+    <string name="cd_filter_icon">Filter Icon</string>
 </resources>

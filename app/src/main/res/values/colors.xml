@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Brand / Vault Palette (Light Default) -->
     <color name="vault_bg">#F4F6F5</color>
@@ -10,6 +10,7 @@
     <color name="vault_text_white">#192420</color>
     <color name="vault_text_gray">#52665E</color>
     <color name="vault_text_dim">#82948C</color>
+    <color name="danger">#D93838</color>
 
     <!-- Add Screen Palette -->
     <color name="add_screen_bg">#F8FAFA</color>
@@ -30,7 +31,6 @@
     <color name="stroke_card_banner">#C3E4DC</color>
     <color name="surface_badge_encrypted">#E6F7F1</color>
     <color name="stroke_badge_encrypted">#BCEBDB</color>
-    <color name="surface_badge_green">#E6F7F1</color>
     <color name="surface_glow">#E6F7F1</color>
     <color name="stroke_glow">#BCEBDB</color>
     <color name="input_bg_solid">#FFFFFF</color>

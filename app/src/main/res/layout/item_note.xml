@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/vault_card"
     app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
@@ -17,7 +22,7 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <!-- Khung icon vuông bo góc -->
+        <!-- Khung icon -->
         <FrameLayout
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -57,10 +62,12 @@
                     android:text="@string/default_bank_title"
                     android:textColor="@color/vault_text_white"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="Vietcombank Vault" />
 
                 <!-- Badge MÃ HÓA -->
                 <TextView
+                    android:id="@+id/tvEncryptedBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -70,7 +77,8 @@
                     android:text="@string/item_encrypted_badge"
                     android:textColor="@color/vault_neon"
                     android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="AES-256" />
             </LinearLayout>
 
             <TextView
@@ -82,7 +90,8 @@
                 android:maxLines="1"
                 android:text="@string/item_sub_bank"
                 android:textColor="@color/vault_text_gray"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:text="•••• •••• •••• 8888" />
 
             <TextView
                 android:id="@+id/tvDate"
@@ -91,17 +100,8 @@
                 android:layout_marginTop="5dp"
                 android:textColor="@color/vault_text_dim"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Cập nhật: 11/10/2026" />
         </LinearLayout>
-
-        <!-- Mũi tên góc phải -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/item_chevron"
-            android:textColor="@color/vault_text_dim"
-            android:textSize="24sp"
-            android:textStyle="bold" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

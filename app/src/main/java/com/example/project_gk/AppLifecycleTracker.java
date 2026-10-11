@@ -13,8 +13,9 @@ public class AppLifecycleTracker implements DefaultLifecycleObserver {
         void onAppBackgrounded();
     }
 
-    private static final long LOCK_GRACE_MS = 60_000L; // Grace period 1 phút
+    private static final long LOCK_GRACE_MS = 60_000L;
 
+    // Hủy đếm ngược khi người dùng quay lại; chỉ khóa khi app đang mở khóa
     private final LockListener lockListener;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isUnlocked = false;
@@ -44,7 +45,6 @@ public class AppLifecycleTracker implements DefaultLifecycleObserver {
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
-        // Nếu người dùng quay lại trong vòng 60 giây, hủy lệnh đếm ngược khóa
         if (isPendingLock) {
             cancelPendingLock();
         }
@@ -52,7 +52,6 @@ public class AppLifecycleTracker implements DefaultLifecycleObserver {
 
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {
-        // Chỉ đặt đếm ngược khóa nếu ứng dụng đang mở khóa
         if (isUnlocked && !isPendingLock) {
             isPendingLock = true;
             handler.postDelayed(lockRunnable, LOCK_GRACE_MS);

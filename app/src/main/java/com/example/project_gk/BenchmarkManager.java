@@ -28,17 +28,14 @@ public class BenchmarkManager {
             sampleList.add(new SecureNote("Test #" + i, "Bảo mật", "TestContent123456"));
         }
 
-        // Đo đạc trên SQLite chuẩn
         long startStandard = System.currentTimeMillis();
         standardDb.noteDao().insertBatch(sampleList);
         long durStandard = System.currentTimeMillis() - startStandard;
-        standardDb.noteDao().deleteAll(); // Dọn dẹp ngay sau khi đo
+        standardDb.noteDao().deleteAll();
 
-        // Đo đạc trên SQLCipher
         long startEncrypted = System.currentTimeMillis();
         encryptedDb.noteDao().insertBatch(sampleList);
         long durEncrypted = System.currentTimeMillis() - startEncrypted;
-        // Xóa sạch các bản ghi test để không làm bẩn giao diện người dùng
         encryptedDb.noteDao().deleteAll();
 
         return new BenchmarkResult(durStandard, durEncrypted);

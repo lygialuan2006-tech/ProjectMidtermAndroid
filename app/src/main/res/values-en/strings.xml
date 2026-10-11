@@ -1,22 +1,20 @@
-<resources>
+﻿<resources>
     <string name="app_name">SecureVault</string>
     <string name="auth_title">DATA ENCRYPTED ON DEVICE</string>
     <string name="security_badge">• SECURITY</string>
     <string name="auth_subtitle">Touch fingerprint or enter Master PIN to unlock key storage (Keystore)</string>
-    <string name="auth_touch_title">Touch Authentication</string>
-    <string name="auth_touch_subtitle">Quick authentication with fingerprint</string>
-    <string name="auth_or">OR</string>
     <string name="auth_pin_label">Enter Master PIN</string>
-    <string name="auth_pin_hint">Enter 6-digit PIN</string>
+    <string name="auth_pin_hint">Enter 6-digit PIN...</string>
     <string name="auth_btn_unlock">AUTHENTICATE &amp; UNLOCK VAULT</string>
     <string name="keystore_alias_label">Keystore Alias</string>
 
     <!-- Dashboard -->
     <string name="dash_btn_benchmark">⏱ Benchmark</string>
     <string name="dash_btn_lock">Lock</string>
-    <string name="dash_search_hint">Search encrypted data</string>
+    <string name="dash_search_hint">Search encrypted data...</string>
     <string name="dash_sub_title">Encrypted Data</string>
     <string name="filter_all">All</string>
+    <string name="filter_toast">Filter: %1$s</string>
 
     <!-- Plurals for item count -->
     <plurals name="dash_count">
@@ -28,7 +26,6 @@
     <string name="dash_db_footer_title">• LOCAL DATABASE</string>
 
     <!-- Add Screen -->
-    <string name="add_btn_back">‹ Back</string>
     <string name="add_title">Add New Record</string>
     <string name="add_title_edit">Edit Record</string>
     <string name="add_btn_save">Save</string>
@@ -41,7 +38,7 @@
     <string name="add_cat_bank">Bank Card</string>
     <string name="add_cat_note">Secure Note</string>
     <string name="add_label_content">Secret Content:</string>
-    <string name="add_hint_content">Enter secret content to encrypt here</string>
+    <string name="add_hint_content">Enter secret content to encrypt here...</string>
     <string name="add_checkbox_clipboard">Auto-clear from Clipboard after 30s</string>
     <string name="add_status_label">Encryption Status: Ready to write</string>
 
@@ -56,7 +53,7 @@
     <string name="toast_pin_empty">Please enter Master PIN!</string>
     <string name="toast_pin_incorrect">Incorrect PIN! (Default: 123456)</string>
     <string name="toast_vault_locked">Vault locked!</string>
-    <string name="toast_benchmark_running">Running benchmark test (1,000 records)</string>
+    <string name="toast_benchmark_running">Running benchmark test (1,000 records)...</string>
 
     <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
     <string name="toast_benchmark_done_format">Completed! SQLite: %1$d ms | SQLCipher: %2$d ms</string>
@@ -66,9 +63,6 @@
     <string name="toast_update_success">Record updated securely!</string>
     <string name="toast_delete_success">Record deleted successfully!</string>
     <string name="toast_copy_success">Copied to Clipboard!</string>
-    <string name="dialog_detail_category">Category: </string>
-    <string name="dialog_detail_content">\n\nSecret Content (AES-256 Decrypted):\n</string>
-    <string name="dialog_btn_copy">Copy</string>
     <string name="dialog_btn_close">Close</string>
     <string name="dialog_delete_confirm">Are you sure you want to delete this record from encrypted vault?</string>
     <string name="dialog_btn_delete">Delete</string>
@@ -92,4 +86,5 @@
     <string name="cd_toggle_pin">Show/hide PIN</string>
     <string name="cd_search_icon">Search Icon</string>
     <string name="cd_add_icon">Add Note Icon</string>
+    <string name="cd_filter_icon">Filter Icon</string>
 </resources>

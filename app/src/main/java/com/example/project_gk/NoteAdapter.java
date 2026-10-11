@@ -75,7 +75,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         String bankCat = context.getString(R.string.add_cat_bank);
         String passCat = context.getString(R.string.add_cat_password);
 
-        // Gán Icon và Phân loại trường thông tin đúng thiết kế
         if (bankCat.equalsIgnoreCase(note.getCategory()) || "Thẻ ngân hàng".equalsIgnoreCase(note.getCategory())) {
             holder.ivCategoryIcon.setImageResource(R.drawable.ic_credit_card);
             holder.tvSubtitle.setText(R.string.item_sub_bank);
