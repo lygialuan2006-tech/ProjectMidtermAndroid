@@ -54,7 +54,8 @@
                     android:layout_marginEnd="8dp"
                     android:layout_toStartOf="@id/tvBadgeSecurityAuth"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="36dp"
@@ -435,7 +436,8 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@id/subHeader"
             android:layout_marginTop="12dp"
-            android:clipToPadding="false" />
+            android:clipToPadding="false"
+            android:paddingBottom="88dp" />
 
         <!-- Nút tròn thêm mới FAB -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
