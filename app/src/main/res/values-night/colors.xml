@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Vault Palette (Dark Mode Overrides) -->
+    <color name="vault_bg">#070A09</color>
+    <color name="vault_card">#0F1512</color>
+    <color name="vault_card_stroke">#1A241F</color>
+    <color name="vault_neon">#00E599</color>
+    <color name="vault_neon_dark">#0F2D24</color>
+    <color name="vault_teal_btn">#00B395</color>
+    <color name="vault_text_white">#F3F5F4</color>
+    <color name="vault_text_gray">#788A83</color>
+    <color name="vault_text_dim">#47544F</color>
+
+    <!-- Add Screen Palette -->
+    <color name="add_screen_bg">#070A09</color>
+    <color name="add_notice_bg">#0F2D24</color>
+    <color name="add_label_text">#DCE4E1</color>
+    <color name="add_title_text">#F3F5F4</color>
+    <color name="add_input_text">#F3F5F4</color>
+    <color name="add_hint_text">#47544F</color>
+    <color name="add_status_icon">#00E599</color>
+    <color name="add_on_accent">#070A09</color>
+
+    <!-- Surface & Drawable Background Colors -->
+    <color name="surface_icon_container">#111B17</color>
+    <color name="stroke_icon_container">#1B2B24</color>
+    <color name="surface_search_box">#121815</color>
+    <color name="stroke_search_box">#1F2A24</color>
+    <color name="surface_card_banner">#0D221B</color>
+    <color name="stroke_card_banner">#16382C</color>
+    <color name="surface_badge_encrypted">#0F2D24</color>
+    <color name="stroke_badge_encrypted">#194D3D</color>
+    <color name="surface_badge_green">#132B23</color>
+    <color name="surface_glow">#0F2A21</color>
+    <color name="stroke_glow">#1E5241</color>
+    <color name="input_bg_solid">#0F1512</color>
+    <color name="input_bg_stroke">#1A241F</color>
+</resources>
