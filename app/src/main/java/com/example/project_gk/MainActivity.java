@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -82,13 +83,13 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (binding.layoutAdd.getRoot().getVisibility() == View.VISIBLE) {
+                if (binding.layoutAdd.getVisibility() == View.VISIBLE) {
                     // Đang ở màn hình Thêm/Sửa -> Quay về Dashboard
                     resetAddForm();
                     hideKeyboard();
-                    binding.layoutAdd.getRoot().setVisibility(View.GONE);
-                    binding.layoutDashboard.getRoot().setVisibility(View.VISIBLE);
-                } else if (binding.layoutDashboard.getRoot().getVisibility() == View.VISIBLE) {
+                    binding.layoutAdd.setVisibility(View.GONE);
+                    binding.layoutDashboard.setVisibility(View.VISIBLE);
+                } else if (binding.layoutDashboard.getVisibility() == View.VISIBLE) {
                     // Đang ở Dashboard -> Khóa vault về Auth
                     lockVault();
                 } else {
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         noteAdapter = new NoteAdapter();
-        binding.layoutDashboard.rvNotes.setLayoutManager(new LinearLayoutManager(this));
-        binding.layoutDashboard.rvNotes.setAdapter(noteAdapter);
+        binding.rvNotes.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvNotes.setAdapter(noteAdapter);
 
         // Nhấn vào từng thẻ để mở màn hình Chỉnh sửa (Edit Note)
         noteAdapter.setOnItemClickListener(this::openEditNoteScreen);
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         selectedCategory = getString(R.string.filter_all);
 
         // Lắng nghe lọc tìm kiếm live
-        binding.layoutDashboard.etSearch.addTextChangedListener(new TextWatcher() {
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Nút filter icon mở PopupMenu
-        binding.layoutDashboard.btnFilter.setOnClickListener(v -> {
+        binding.btnFilter.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(this, v);
             popup.getMenu().add(0, 0, 0, getString(R.string.filter_all));
             popup.getMenu().add(0, 1, 1, getString(R.string.add_cat_password));
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (title != null) {
                     selectedCategory = title.toString();
                     triggerFilter();
-                    Toast.makeText(this, "Lọc: " + selectedCategory, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.filter_toast, selectedCategory), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             });
@@ -148,31 +149,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void triggerFilter() {
-        String query = binding.layoutDashboard.etSearch.getText() != null ? binding.layoutDashboard.etSearch.getText().toString() : "";
+        String query = binding.etSearch.getText() != null ? binding.etSearch.getText().toString() : "";
         noteAdapter.applyFilter(query, selectedCategory, this);
     }
 
     private void setupListeners() {
         // --- 1. MÀN HÌNH KHÓA (AUTH) ---
-        binding.layoutAuth.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
+        binding.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
 
         // Bật / tắt ẩn hiện Master PIN (Dùng selector)
-        binding.layoutAuth.ivTogglePin.setOnClickListener(v -> {
+        binding.ivTogglePin.setOnClickListener(v -> {
             isPinVisible = !isPinVisible;
-            binding.layoutAuth.ivTogglePin.setSelected(isPinVisible);
+            binding.ivTogglePin.setSelected(isPinVisible);
             if (isPinVisible) {
-                binding.layoutAuth.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER);
+                binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER);
             } else {
-                binding.layoutAuth.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             }
-            if (binding.layoutAuth.etMasterPin.getText() != null) {
-                binding.layoutAuth.etMasterPin.setSelection(binding.layoutAuth.etMasterPin.getText().length());
+            if (binding.etMasterPin.getText() != null) {
+                binding.etMasterPin.setSelection(binding.etMasterPin.getText().length());
             }
         });
 
         // Xác thực bằng Master PIN
-        binding.layoutAuth.btnAuthPin.setOnClickListener(v -> {
-            String enteredPin = binding.layoutAuth.etMasterPin.getText().toString().trim();
+        binding.btnAuthPin.setOnClickListener(v -> {
+            String enteredPin = binding.etMasterPin.getText().toString().trim();
 
             if (enteredPin.isEmpty()) {
                 Toast.makeText(this, getString(R.string.toast_pin_empty), Toast.LENGTH_SHORT).show();
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (DEFAULT_MASTER_PIN.equals(enteredPin)) {
                 hideKeyboard();
-                binding.layoutAuth.etMasterPin.setText("");
+                binding.etMasterPin.setText("");
                 unlockDatabase();
             } else {
                 Toast.makeText(this, getString(R.string.toast_pin_incorrect), Toast.LENGTH_SHORT).show();
@@ -189,16 +190,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // --- 2. MÀN HÌNH DASHBOARD ---
-        binding.layoutDashboard.btnLock.setOnClickListener(v -> {
+        binding.btnLock.setOnClickListener(v -> {
             lockVault();
             Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
         });
 
         // Nút thêm mới bản ghi (+) -> Open Form Add Mode
-        binding.layoutDashboard.fabAdd.setOnClickListener(v -> openAddNoteScreen());
+        binding.fabAdd.setOnClickListener(v -> openAddNoteScreen());
 
         // Benchmark test
-        binding.layoutDashboard.btnBenchmark.setOnClickListener(v -> {
+        binding.btnBenchmark.setOnClickListener(v -> {
             if (standardDb != null && encryptedDb != null) {
                 Toast.makeText(this, getString(R.string.toast_benchmark_running), Toast.LENGTH_SHORT).show();
                 backgroundExecutor.execute(() -> {
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     initDefaultDataIfEmpty();
 
                     runOnUiThread(() -> {
-                        Toast.makeText(this, getString(R.string.toast_benchmark_done_format, res.standardDurationMs, res.sqlCipherDurationMs), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.toast_benchmark_done_format, res.standardDurationMs(), res.sqlCipherDurationMs()), Toast.LENGTH_LONG).show();
                         loadNotesFromDatabase();
                     });
                 });
@@ -216,59 +217,59 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // --- 3. MÀN HÌNH THÊM / CHỈNH SỬA ---
-        binding.layoutAdd.btnBack.setOnClickListener(v -> {
+        binding.btnBack.setOnClickListener(v -> {
             hideKeyboard();
             resetAddForm();
-            binding.layoutAdd.getRoot().setVisibility(View.GONE);
-            binding.layoutDashboard.getRoot().setVisibility(View.VISIBLE);
+            binding.layoutAdd.setVisibility(View.GONE);
+            binding.layoutDashboard.setVisibility(View.VISIBLE);
         });
 
-        binding.layoutAdd.btnSaveData.setOnClickListener(v -> saveOrUpdateNote());
+        binding.btnSaveData.setOnClickListener(v -> saveOrUpdateNote());
 
-        binding.layoutAdd.btnDeleteNote.setOnClickListener(v -> confirmDeleteNote());
+        binding.btnDeleteNote.setOnClickListener(v -> confirmDeleteNote());
     }
 
     private void openAddNoteScreen() {
         editingNoteId = -1L;
         resetAddForm();
-        binding.layoutAdd.tvAddTitle.setText(R.string.add_title);
-        binding.layoutAdd.btnDeleteNote.setVisibility(View.GONE);
-        binding.layoutDashboard.getRoot().setVisibility(View.GONE);
-        binding.layoutAdd.getRoot().setVisibility(View.VISIBLE);
+        binding.tvAddTitle.setText(R.string.add_title);
+        binding.btnDeleteNote.setVisibility(View.GONE);
+        binding.layoutDashboard.setVisibility(View.GONE);
+        binding.layoutAdd.setVisibility(View.VISIBLE);
     }
 
     private void openEditNoteScreen(SecureNote note) {
         editingNoteId = note.getId();
-        binding.layoutAdd.tvAddTitle.setText(R.string.add_title_edit);
-        binding.layoutAdd.etTitleInput.setText(note.getTitle());
-        binding.layoutAdd.etContentInput.setText(note.getSecretContent());
+        binding.tvAddTitle.setText(R.string.add_title_edit);
+        binding.etTitleInput.setText(note.getTitle());
+        binding.etContentInput.setText(note.getSecretContent());
 
         String bankCat = getString(R.string.add_cat_bank);
         String noteCat = getString(R.string.add_cat_note);
 
         if (bankCat.equalsIgnoreCase(note.getCategory()) || "Thẻ ngân hàng".equalsIgnoreCase(note.getCategory())) {
-            binding.layoutAdd.rbBank.setChecked(true);
+            binding.rbBank.setChecked(true);
         } else if (noteCat.equalsIgnoreCase(note.getCategory()) || "Ghi chú".equalsIgnoreCase(note.getCategory())) {
-            binding.layoutAdd.rbNote.setChecked(true);
+            binding.rbNote.setChecked(true);
         } else {
-            binding.layoutAdd.rbPassword.setChecked(true);
+            binding.rbPassword.setChecked(true);
         }
 
-        binding.layoutAdd.btnDeleteNote.setVisibility(View.VISIBLE);
-        binding.layoutDashboard.getRoot().setVisibility(View.GONE);
-        binding.layoutAdd.getRoot().setVisibility(View.VISIBLE);
+        binding.btnDeleteNote.setVisibility(View.VISIBLE);
+        binding.layoutDashboard.setVisibility(View.GONE);
+        binding.layoutAdd.setVisibility(View.VISIBLE);
     }
 
     private void resetAddForm() {
         editingNoteId = -1L;
-        binding.layoutAdd.etTitleInput.setText("");
-        binding.layoutAdd.etContentInput.setText("");
-        binding.layoutAdd.rbPassword.setChecked(true);
+        binding.etTitleInput.setText("");
+        binding.etContentInput.setText("");
+        binding.rbPassword.setChecked(true);
     }
 
     private void saveOrUpdateNote() {
-        String title = binding.layoutAdd.etTitleInput.getText().toString().trim();
-        String content = binding.layoutAdd.etContentInput.getText().toString().trim();
+        String title = binding.etTitleInput.getText().toString().trim();
+        String content = binding.etContentInput.getText().toString().trim();
 
         if (title.isEmpty() || content.isEmpty()) {
             Toast.makeText(this, getString(R.string.toast_input_required), Toast.LENGTH_SHORT).show();
@@ -278,9 +279,9 @@ public class MainActivity extends AppCompatActivity {
         hideKeyboard();
 
         String category = getString(R.string.add_cat_password);
-        if (binding.layoutAdd.rbBank.isChecked()) {
+        if (binding.rbBank.isChecked()) {
             category = getString(R.string.add_cat_bank);
-        } else if (binding.layoutAdd.rbNote.isChecked()) {
+        } else if (binding.rbNote.isChecked()) {
             category = getString(R.string.add_cat_note);
         }
 
@@ -306,8 +307,8 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 boolean wasEdit = (editingNoteId != -1L);
                 resetAddForm();
-                binding.layoutAdd.getRoot().setVisibility(View.GONE);
-                binding.layoutDashboard.getRoot().setVisibility(View.VISIBLE);
+                binding.layoutAdd.setVisibility(View.GONE);
+                binding.layoutDashboard.setVisibility(View.VISIBLE);
                 loadNotesFromDatabase();
 
                 String msg = wasEdit ? getString(R.string.toast_update_success) : getString(R.string.toast_save_success);
@@ -328,8 +329,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     runOnUiThread(() -> {
                         resetAddForm();
-                        binding.layoutAdd.getRoot().setVisibility(View.GONE);
-                        binding.layoutDashboard.getRoot().setVisibility(View.VISIBLE);
+                        binding.layoutAdd.setVisibility(View.GONE);
+                        binding.layoutDashboard.setVisibility(View.VISIBLE);
                         loadNotesFromDatabase();
                         Toast.makeText(this, getString(R.string.toast_delete_success), Toast.LENGTH_SHORT).show();
                     });
@@ -344,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle(getString(R.string.biometric_prompt_title))
                 .setSubtitle(getString(R.string.biometric_prompt_subtitle))
-                .setDeviceCredentialAllowed(true)
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG | BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                 .build();
 
         BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor,
@@ -379,9 +380,9 @@ public class MainActivity extends AppCompatActivity {
                 if (lifecycleTracker != null) {
                     lifecycleTracker.setUnlocked(true);
                 }
-                binding.layoutAuth.getRoot().setVisibility(View.GONE);
-                binding.layoutAdd.getRoot().setVisibility(View.GONE);
-                binding.layoutDashboard.getRoot().setVisibility(View.VISIBLE);
+                binding.layoutAuth.setVisibility(View.GONE);
+                binding.layoutAdd.setVisibility(View.GONE);
+                binding.layoutDashboard.setVisibility(View.VISIBLE);
                 loadNotesFromDatabase();
             });
         });
@@ -413,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 noteAdapter.setNotes(notes);
                 triggerFilter();
-                binding.layoutDashboard.tvCount.setText(getResources().getQuantityString(R.plurals.dash_count, notes.size(), notes.size()));
+                binding.tvCount.setText(getResources().getQuantityString(R.plurals.dash_count, notes.size(), notes.size()));
             });
         });
     }
@@ -424,26 +425,26 @@ public class MainActivity extends AppCompatActivity {
             lifecycleTracker.setUnlocked(false);
         }
 
-        if (binding != null && binding.layoutAuth.etMasterPin != null) {
-            binding.layoutAuth.etMasterPin.setText("");
-            binding.layoutAuth.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-            binding.layoutAuth.ivTogglePin.setSelected(false);
+        if (binding != null) {
+            binding.etMasterPin.setText("");
+            binding.etMasterPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            binding.ivTogglePin.setSelected(false);
             isPinVisible = false;
         }
 
         hideKeyboard();
 
         if (binding != null) {
-            binding.layoutDashboard.getRoot().setVisibility(View.GONE);
-            binding.layoutAdd.getRoot().setVisibility(View.GONE);
-            binding.layoutAuth.getRoot().setVisibility(View.VISIBLE);
+            binding.layoutDashboard.setVisibility(View.GONE);
+            binding.layoutAdd.setVisibility(View.GONE);
+            binding.layoutAuth.setVisibility(View.VISIBLE);
         }
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null && getCurrentFocus() != null) {
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        InputMethodManager immReal = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (immReal != null && getCurrentFocus() != null) {
+            immReal.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
 

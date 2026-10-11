@@ -7,14 +7,7 @@ public class BenchmarkManager {
     private final AppDatabase standardDb;
     private final AppDatabase encryptedDb;
 
-    public static class BenchmarkResult {
-        public final long standardDurationMs;
-        public final long sqlCipherDurationMs;
-
-        public BenchmarkResult(long standardDurationMs, long sqlCipherDurationMs) {
-            this.standardDurationMs = standardDurationMs;
-            this.sqlCipherDurationMs = sqlCipherDurationMs;
-        }
+    public record BenchmarkResult(long standardDurationMs, long sqlCipherDurationMs) {
     }
 
     public BenchmarkManager(AppDatabase standardDb, AppDatabase encryptedDb) {
