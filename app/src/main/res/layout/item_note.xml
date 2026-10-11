@@ -23,13 +23,14 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_icon_container">
 
-            <TextView
-                android:id="@+id/tvCategoryIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/ivCategoryIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:text="🏛"
-                android:textSize="20sp" />
+                android:contentDescription="@string/cd_shield_icon"
+                android:src="@drawable/ic_credit_card"
+                app:tint="@color/vault_neon" />
         </FrameLayout>
 
         <!-- Khối nội dung chính -->
@@ -53,7 +54,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Tài khoản ngân hàng"
+                    android:text="@string/default_bank_title"
                     android:textColor="@color/vault_text_white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -62,10 +63,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:background="@drawable/bg_badge_encrypted"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="3dp"
-                    android:text="🔒 MÃ HÓA"
+                    android:text="@string/item_encrypted_badge"
                     android:textColor="@color/vault_neon"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -78,7 +80,7 @@
                 android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Số tài khoản · Mã PIN · 2 trường"
+                android:text="@string/item_sub_bank"
                 android:textColor="@color/vault_text_gray"
                 android:textSize="13sp" />
 
@@ -87,7 +89,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="CẬP NHẬT HÔM NAY · 09:42"
                 android:textColor="@color/vault_text_dim"
                 android:textSize="11sp"
                 android:textStyle="bold" />

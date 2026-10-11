@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             String enteredPin = binding.etMasterPin.getText().toString().trim();
 
             if (enteredPin.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập Master PIN!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_pin_empty), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.etMasterPin.setText(""); // Xóa trắng PIN sau khi mở thành công
                 unlockDatabase();
             } else {
-                Toast.makeText(this, "Mã PIN không chính xác! (Mặc định: 123456)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_pin_incorrect), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         // Nút Khóa: Đóng database, xóa trắng PIN và trở về màn hình xác thực
         binding.btnLock.setOnClickListener(v -> {
             lockVault();
-            Toast.makeText(this, "Đã khóa kho dữ liệu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
         });
 
         // Nút thêm mới bản ghi (+)
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         // Chạy kiểm thử hiệu năng Benchmark độc lập
         binding.btnBenchmark.setOnClickListener(v -> {
             if (standardDb != null && encryptedDb != null) {
-                Toast.makeText(this, "Đang đo đạc hiệu năng (1,000 bản ghi)...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_benchmark_running), Toast.LENGTH_SHORT).show();
                 backgroundExecutor.execute(() -> {
                     BenchmarkManager bm = new BenchmarkManager(standardDb, encryptedDb);
                     BenchmarkManager.BenchmarkResult res = bm.runBatchInsertBenchmark(1000);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     initDefaultDataIfEmpty();
 
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Hoàn tất! SQLite: " + res.standardDurationMs + " ms | SQLCipher: " + res.sqlCipherDurationMs + " ms", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.toast_benchmark_done_format, res.standardDurationMs, res.sqlCipherDurationMs), Toast.LENGTH_LONG).show();
                         loadNotesFromDatabase();
                     });
                 });
@@ -163,17 +163,17 @@ public class MainActivity extends AppCompatActivity {
             String content = binding.etContentInput.getText().toString().trim();
 
             if (title.isEmpty() || content.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đủ Tiêu đề và Nội dung!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_input_required), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             hideKeyboard();
 
-            String category = "Mật khẩu";
+            String category = getString(R.string.add_cat_password);
             if (binding.rbBank.isChecked()) {
-                category = "Thẻ ngân hàng";
+                category = getString(R.string.add_cat_bank);
             } else if (binding.rbNote.isChecked()) {
-                category = "Ghi chú";
+                category = getString(R.string.add_cat_note);
             }
 
             final String finalCategory = category;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     binding.layoutDashboard.setVisibility(View.VISIBLE);
                     loadNotesFromDatabase();
 
-                    Toast.makeText(this, "Đã mã hóa và lưu an toàn vào SQLCipher!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.toast_save_success), Toast.LENGTH_SHORT).show();
                 });
             });
         });
@@ -205,16 +205,16 @@ public class MainActivity extends AppCompatActivity {
     private void showNoteDetailDialog(SecureNote note) {
         new AlertDialog.Builder(this)
                 .setTitle(note.getTitle())
-                .setMessage("Phân loại: " + note.getCategory() + "\n\nNội dung bí mật (Đã giải mã AES-256):\n" + note.getSecretContent())
-                .setPositiveButton("Sao chép", (dialog, which) -> {
+                .setMessage(getString(R.string.dialog_detail_category) + note.getCategory() + getString(R.string.dialog_detail_content) + note.getSecretContent())
+                .setPositiveButton(getString(R.string.dialog_btn_copy), (dialog, which) -> {
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("SecureVault", note.getSecretContent());
                     if (clipboard != null) {
                         clipboard.setPrimaryClip(clip);
-                        Toast.makeText(this, "Đã sao chép vào Clipboard!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_copy_success), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Đóng", null)
+                .setNegativeButton(getString(R.string.dialog_btn_close), null)
                 .show();
     }
 
@@ -222,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
         Executor executor = ContextCompat.getMainExecutor(this);
 
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Xác thực SecureVault")
-                .setSubtitle("Chạm vân tay để giải mã khóa kho lưu trữ")
+                .setTitle(getString(R.string.biometric_prompt_title))
+                .setSubtitle(getString(R.string.biometric_prompt_subtitle))
                 .setDeviceCredentialAllowed(true)
                 .build();
 
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                         super.onAuthenticationError(errorCode, errString);
-                        Toast.makeText(MainActivity.this, "Lỗi xác thực: " + errString, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.biometric_error_prefix) + errString, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -273,9 +273,18 @@ public class MainActivity extends AppCompatActivity {
         // Nếu database trống hoặc đang bị kẹt > 50 bản ghi thử nghiệm cũ: làm sạch và nạp lại chuẩn
         if (count == 0 || count > 50) {
             encryptedDb.noteDao().deleteAll();
-            encryptedDb.noteDao().insertNote(new SecureNote("Tài khoản ngân hàng", "Thẻ ngân hàng", "STK: 19038291829 | PIN: 882910"));
-            encryptedDb.noteDao().insertNote(new SecureNote("Đăng nhập công việc", "Mật khẩu", "user: dev_admin@secure.io | pass: K@9xL!2#zP | 2FA: 492 108"));
-            encryptedDb.noteDao().insertNote(new SecureNote("Ghi chú cá nhân", "Ghi chú", "Mã khôi phục ví lạnh: 12 words secret backup seed phrase"));
+            encryptedDb.noteDao().insertNote(new SecureNote(
+                    getString(R.string.default_bank_title),
+                    getString(R.string.add_cat_bank),
+                    getString(R.string.default_bank_content)));
+            encryptedDb.noteDao().insertNote(new SecureNote(
+                    getString(R.string.default_pass_title),
+                    getString(R.string.add_cat_password),
+                    getString(R.string.default_pass_content)));
+            encryptedDb.noteDao().insertNote(new SecureNote(
+                    getString(R.string.default_note_title),
+                    getString(R.string.add_cat_note),
+                    getString(R.string.default_note_content)));
         }
     }
 
@@ -285,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
             List<SecureNote> notes = encryptedDb.noteDao().getAllNotes();
             runOnUiThread(() -> {
                 noteAdapter.setNotes(notes);
-                binding.tvCount.setText(String.format("%02d MỤC", notes.size()));
+                binding.tvCount.setText(getString(R.string.dash_count_format, notes.size()));
             });
         });
     }

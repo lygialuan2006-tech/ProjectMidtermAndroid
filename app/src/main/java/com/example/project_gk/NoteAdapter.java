@@ -1,8 +1,10 @@
 package com.example.project_gk;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,23 +41,27 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+        Context context = holder.itemView.getContext();
         SecureNote note = notes.get(position);
         holder.tvTitle.setText(note.getTitle());
 
+        String bankCat = context.getString(R.string.add_cat_bank);
+        String passCat = context.getString(R.string.add_cat_password);
+
         // Gán Icon và Phân loại trường thông tin đúng thiết kế
-        if ("Thẻ ngân hàng".equalsIgnoreCase(note.getCategory())) {
-            holder.tvCategoryIcon.setText("🏛️");
-            holder.tvSubtitle.setText("Số tài khoản · Mã PIN · 2 trường");
-        } else if ("Mật khẩu".equalsIgnoreCase(note.getCategory())) {
-            holder.tvCategoryIcon.setText("🔑");
-            holder.tvSubtitle.setText("Email · Mật khẩu · Mã 2FA");
+        if (bankCat.equalsIgnoreCase(note.getCategory()) || "Thẻ ngân hàng".equalsIgnoreCase(note.getCategory())) {
+            holder.ivCategoryIcon.setImageResource(R.drawable.ic_credit_card);
+            holder.tvSubtitle.setText(R.string.item_sub_bank);
+        } else if (passCat.equalsIgnoreCase(note.getCategory()) || "Mật khẩu".equalsIgnoreCase(note.getCategory())) {
+            holder.ivCategoryIcon.setImageResource(R.drawable.ic_key);
+            holder.tvSubtitle.setText(R.string.item_sub_password);
         } else {
-            holder.tvCategoryIcon.setText("📝");
-            holder.tvSubtitle.setText("Mã khôi phục · Ghi chú bảo mật");
+            holder.ivCategoryIcon.setImageResource(R.drawable.ic_note);
+            holder.tvSubtitle.setText(R.string.item_sub_note);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy · HH:mm", Locale.getDefault());
-        holder.tvDate.setText("CẬP NHẬT " + sdf.format(new Date(note.getTimestamp())));
+        holder.tvDate.setText(context.getString(R.string.item_date_prefix) + sdf.format(new Date(note.getTimestamp())));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -70,11 +76,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     static class NoteViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCategoryIcon, tvTitle, tvSubtitle, tvDate;
+        ImageView ivCategoryIcon;
+        TextView tvTitle, tvSubtitle, tvDate;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvCategoryIcon = itemView.findViewById(R.id.tvCategoryIcon);
+            ivCategoryIcon = itemView.findViewById(R.id.ivCategoryIcon);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvSubtitle = itemView.findViewById(R.id.tvSubtitle);
             tvDate = itemView.findViewById(R.id.tvDate);
