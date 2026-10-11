@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Chống chụp/quay màn hình (FLAG_SECURE)
+        // Chống chụp/quay màn hình (FLAG_SECURE)
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 2. Tự động khóa kho dữ liệu khi ẩn app
+        // Tự động khóa kho dữ liệu khi ẩn app
         lifecycleTracker = new AppLifecycleTracker(() -> runOnUiThread(this::lockVault));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleTracker);
 
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // --- 1. MÀN HÌNH KHÓA ---
+        // --- Màn hình khóa ---
         binding.btnAuthTouch.setOnClickListener(v -> showBiometricPrompt());
 
         binding.ivTogglePin.setOnClickListener(v -> {
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // --- 2. MÀN HÌNH DASHBOARD ---
+        // --- Dashboard ---
         binding.btnLock.setOnClickListener(v -> {
             lockVault();
             Toast.makeText(this, getString(R.string.toast_vault_locked), Toast.LENGTH_SHORT).show();
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // --- 3. MÀN HÌNH THÊM / SỬA ---
+        // --- Màn hình thêm / sửa ---
         binding.btnBack.setOnClickListener(v -> {
             hideKeyboard();
             resetAddForm();
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Hiệu ứng chuyển đổi màn hình mượt mà
+    // Chuyển màn hình (cross-fade)
     private void crossFade(View fromView, View toView) {
         toView.setAlpha(0f);
         toView.setVisibility(View.VISIBLE);
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    // Cơ chế xóa sạch Clipboard sau 30 giây bảo mật
+    // Copy rồi tự xóa Clipboard sau 30 giây
     private void copyToClipboardWithAutoClear(String secretText) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard != null) {
@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
             encryptedDb = AppDatabase.getEncryptedDatabase(getApplicationContext(), passphrase);
             standardDb = AppDatabase.getStandardDatabase(getApplicationContext());
 
-            // B6: ghi log chuỗi chứng thư attestation của khóa Keystore
+            // Ghi log chuỗi chứng thư attestation của khóa Keystore
             KeyStoreManager.logKeyAttestation();
 
             initDefaultDataIfEmpty();

@@ -7,9 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/vault_bg">
 
-    <!-- ======================================================== -->
-    <!-- 1. MÀN HÌNH KHỞI ĐỘNG & MỞ KHÓA (AUTH SCREEN - SCROLLABLE) -->
-    <!-- ======================================================== -->
+    <!-- AUTH -->
     <ScrollView
         android:id="@+id/layoutAuth"
         android:layout_width="match_parent"
@@ -79,7 +77,7 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <!-- Biểu tượng khóa phát sáng -->
+            <!-- Biểu tượng khóa -->
             <FrameLayout
                 android:layout_width="120dp"
                 android:layout_height="120dp"
@@ -123,7 +121,7 @@
                 android:layout_weight="1"
                 android:minHeight="24dp" />
 
-            <!-- Khung Nhập PIN Master kèm Nút Vân Tay vuông bên phải -->
+            <!-- Khung nhập PIN -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -166,7 +164,7 @@
                             app:tint="@color/vault_neon" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Nút hiển thị/ẩn PIN (Mắt selector) -->
+                    <!-- Nút ẩn/hiện PIN -->
                     <ImageView
                         android:id="@+id/ivTogglePin"
                         android:layout_width="36dp"
@@ -229,9 +227,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ======================================================== -->
-    <!-- 2. MÀN HÌNH DASHBOARD (KHO DỮ LIỆU ĐÃ GIẢI MÃ) -->
-    <!-- ======================================================== -->
+    <!-- DASHBOARD -->
     <RelativeLayout
         android:id="@+id/layoutDashboard"
         android:layout_width="match_parent"
@@ -381,7 +377,7 @@
                 app:tint="@color/vault_text_dim" />
         </LinearLayout>
 
-        <!-- Thống kê Header -->
+        <!-- Thống kê -->
         <RelativeLayout
             android:id="@+id/subHeader"
             android:layout_width="match_parent"
@@ -439,7 +435,7 @@
             android:clipToPadding="false"
             android:paddingBottom="88dp" />
 
-        <!-- Nút tròn thêm mới FAB -->
+        <!-- Nút thêm mới -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAdd"
             android:layout_width="wrap_content"
@@ -456,9 +452,7 @@
             app:tint="@color/vault_bg" />
     </RelativeLayout>
 
-    <!-- ======================================================== -->
-    <!-- 3. MÀN HÌNH THÊM / CHỈNH SỬA DỮ LIỆU (SCROLLABLE & FLEXIBLE) -->
-    <!-- ======================================================== -->
+    <!-- ADD / EDIT -->
     <ScrollView
         android:id="@+id/layoutAdd"
         android:layout_width="match_parent"
@@ -529,7 +523,7 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <!-- Thẻ thông báo trên đầu -->
+            <!-- Thông báo -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -667,7 +661,7 @@
                 android:layout_weight="1"
                 android:minHeight="20dp" />
 
-            <!-- Card Trạng thái ở đáy -->
+            <!-- Card trạng thái -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

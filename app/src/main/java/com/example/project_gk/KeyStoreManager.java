@@ -95,7 +95,6 @@ public class KeyStoreManager {
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                         .setKeySize(256);
         if (strongBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // Yêu cầu khóa phải nằm trong StrongBox (chip bảo mật chuyên dụng).
             builder.setIsStrongBoxBacked(true);
         }
         return builder.build();
@@ -105,18 +104,17 @@ public class KeyStoreManager {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
         try {
-            // Ưu tiên StrongBox nếu phần cứng hỗ trợ.
             keyGenerator.init(buildKeySpec(true));
             return keyGenerator.generateKey();
         } catch (StrongBoxUnavailableException e) {
-            // Thiết bị không có StrongBox -> quay về TEE / secure hardware mặc định.
+            // Máy không có StrongBox -> fallback về TEE
             keyGenerator.init(buildKeySpec(false));
             return keyGenerator.generateKey();
         }
     }
 
     /**
-     * B6 — Đọc và ghi log chuỗi chứng thư (certificate chain) của khóa trong AndroidKeyStore.
+     * Đọc và ghi log chuỗi chứng thư (certificate chain) của khóa trong AndroidKeyStore.
      * Chuỗi này do Google ký và chứa attestation extension, dùng để chứng minh khóa
      * thực sự được sinh trong vùng bảo mật phần cứng (TEE/StrongBox).
      * Lưu ý: chỉ ĐỌC, không sinh lại khóa nên không ảnh hưởng dữ liệu vault hiện có.
