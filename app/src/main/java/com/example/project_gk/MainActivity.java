@@ -66,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Chống chụp/quay màn hình (FLAG_SECURE)
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-        );
+        // (FLAG_SECURE)
+//        getWindow().setFlags(
+//                WindowManager.LayoutParams.FLAG_SECURE,
+//                WindowManager.LayoutParams.FLAG_SECURE
+//        );
 
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Tự động khóa kho dữ liệu khi ẩn app
+        // Tự động khóa dữ liệu khi ẩn app
         lifecycleTracker = new AppLifecycleTracker(() -> runOnUiThread(this::lockVault));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleTracker);
 
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                     List<SecureNote> backup = encryptedDb.noteDao().getAllNotes();
 
                     BenchmarkManager bm = new BenchmarkManager(standardDb, encryptedDb);
-                    BenchmarkManager.BenchmarkResult res = bm.runBatchInsertBenchmark(1000);
+                    BenchmarkManager.BenchmarkResult res = bm.runBatchInsertBenchmark(20000);
 
                     // Phục hồi nguyên trạng dữ liệu đã sao lưu
                     encryptedDb.noteDao().deleteAll();

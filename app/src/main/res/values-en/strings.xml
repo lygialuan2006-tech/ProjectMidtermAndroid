@@ -57,7 +57,7 @@
     <string name="toast_pin_incorrect_format">Incorrect PIN! %1$d attempts remaining.</string>
     <string name="toast_pin_lockout">Too many failed attempts! Try again in 30s.</string>
     <string name="toast_vault_locked">Vault locked!</string>
-    <string name="toast_benchmark_running">Running benchmark test (1,000 records)</string>
+    <string name="toast_benchmark_running">Running benchmark test (20,000 records)</string>
 
     <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
     <string name="toast_benchmark_done_format">SQLite: %1$d ms - SQLCipher: %2$d ms</string>

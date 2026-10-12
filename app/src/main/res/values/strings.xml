@@ -62,7 +62,7 @@
     <string name="toast_pin_incorrect_format">Mã PIN sai! Còn lại %1$d lần thử.</string>
     <string name="toast_pin_lockout">Nhập sai quá 5 lần! Thử lại sau 30 giây.</string>
     <string name="toast_vault_locked">Đã khóa kho dữ liệu!</string>
-    <string name="toast_benchmark_running">Đang đo đạc hiệu năng (1,000 bản ghi × 5 vòng)…</string>
+    <string name="toast_benchmark_running">Đang đo đạc hiệu năng (20,000 bản ghi)</string>
 
     <!-- %1$d = SQLite duration (ms), %2$d = SQLCipher duration (ms) -->
     <string name="toast_benchmark_done_format">Hoàn tất! SQLite: %1$d ms | SQLCipher: %2$d ms</string>

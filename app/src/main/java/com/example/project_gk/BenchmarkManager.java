@@ -21,7 +21,7 @@ public class BenchmarkManager {
     public BenchmarkResult runBatchInsertBenchmark(int count) {
         List<SecureNote> sampleList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            sampleList.add(new SecureNote("Test #" + i, "Bảo mật", "TestContent123456"));
+            sampleList.add(new SecureNote("Test #" + i, "Bảo mật", "X".repeat(512)));
         }
 
         // Warm-up: nạp trang DB & JIT trước khi đo
